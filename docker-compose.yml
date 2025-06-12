@@ -3,8 +3,9 @@ version: "3.8"
 services:
   # DB PostgreSQL
   aivideo-db:
-    image: postgres
-    container_name: aivideo-db
+    image: postgres:15
+    container_name: aivideo-postgres
+    restart: unless-stopped
     ports:
       - ${POSTGRES_PORT}:5432
     environment:
@@ -13,11 +14,17 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./data/pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Redis
   aivideo-redis:
     image: bitnami/redis:latest
     container_name: aivideo-redis
+    restart: unless-stopped
     ports:
       - ${REDIS_PORT}:6379
     environment:
@@ -25,3 +32,8 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     volumes:
       - ./data/redis:/bitnami/redis/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
