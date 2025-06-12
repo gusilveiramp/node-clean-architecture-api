@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:3333
+
+### Create product
+
+# @name create_product
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "a",
+  "email": "gu2222@test.com"
+}
+

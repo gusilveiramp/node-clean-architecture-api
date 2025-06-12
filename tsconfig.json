@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/node23/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "./src",
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true
+  },
+  "include": ["src/**/*", "src/infra/testing/jest.e2e.config.ts"],
+  "exclude": ["src/modules/users/use-cases/__tests__/**/*", "node_modules", "dist"]
+}

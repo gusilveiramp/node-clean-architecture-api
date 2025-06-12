@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  # DB PostgreSQL
+  aivideo-db:
+    image: postgres
+    container_name: aivideo-db
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./data/pg:/var/lib/postgresql/data
+
+  # Redis
+  aivideo-redis:
+    image: bitnami/redis:latest
+    container_name: aivideo-redis
+    ports:
+      - ${REDIS_PORT}:6379
+    environment:
+      - ALLOW_EMPTY_PASSWORD=no
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - ./data/redis:/bitnami/redis/data
