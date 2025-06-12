@@ -17,12 +17,11 @@ Designed to serve as a solid foundation for modern back-end applications with pr
 
 ## Project Structure (Clean Architecture)
 
-<!-- prettier-ignore-start -->
-
+```bash
 ├── jest.config.ts
 ├── jest.e2e.config.ts
 │
-📁 src/  
+📁 src/
 ├── app.module.ts                         # Entry point of the application. Responsible for initializing services and dependencies.
 │
 ├── 📁 modules/                           # Domain layer, organized by business features (e.g., users, payments).
@@ -34,8 +33,8 @@ Designed to serve as a solid foundation for modern back-end applications with pr
 │   └── 📁 repositories/                   # Interfaces (abstractions) for data access. They don’t know the implementation.
 │
 ├── 📁 infra/                             # Infrastructure layer: database, HTTP, queues, etc.
-│   ├── 📁 testing/ 
-│   │   └── setup-e2e.ts 
+│   ├── 📁 testing/
+│   │   └── setup-e2e.ts
 │   │
 │   ├── 📁 config/                         # Application configs (e.g., env, cache, global constants).
 │   │   └── env.ts                         # Parses and validates environment variables using Zod.
@@ -65,7 +64,7 @@ Designed to serve as a solid foundation for modern back-end applications with pr
     ├── 📁 errors/                         # Error handlers and adapters (e.g., Prisma, validation).
     └── 📁 utils/                          # Generic utility functions and helpers.
 
-<!-- prettier-ignore-end -->
+```
 
 ## Getting Started
 
