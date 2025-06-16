@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3333
 
-### Create product
+### Create user
 
 # @name create_product
 POST {{baseUrl}}/users
