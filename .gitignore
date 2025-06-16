@@ -13,3 +13,6 @@ data/
 
 # Tests
 /coverage
+
+# macOS
+.DS_Store
