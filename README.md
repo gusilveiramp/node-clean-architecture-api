@@ -11,7 +11,7 @@ Designed to serve as a solid foundation for modern back-end applications with pr
 - Zod for data validation
 - Jest for unit testing
 - ESLint + Prettier integrated
-- Husky + lint-staged for Git hooks
+- Husky for Git hooks
 - Scripts for dev, build, test, and lint
 - Ready for CI/CD and scalable for production
 
@@ -100,7 +100,7 @@ npm run test:cov # coverage
 
 npm run lint
 
-> Husky and lint-staged will also run automatically on pre-commit.
+> Husky will also run automatically on pre-commit.
 
 ## Tools & Libraries
 
@@ -110,7 +110,7 @@ npm run lint
 - Validation: Zod
 - Linting: ESLint + Prettier
 - Testing: Jest + ts-jest
-- Git Hooks: Husky + lint-staged
+- Git Hooks: Husky
 - Dev runner: TSX
 
 ## How I created this template (step by step)
@@ -134,25 +134,23 @@ This README also serves as my own guide to replicate this setup in the future.
 
 5. Create eslint.config.mjs and integrate with Prettier
 
-6. Set up Husky and lint-staged:
-   npm install -D husky lint-staged  
-   npx husky init  
+6. Set up Husky:
+   npm install -D husky
+   npx husky init
    npm run prepare
 
-7. Edit .husky/pre-commit:
-   npx lint-staged
+7. Edit .husky/pre-commit to run your checks:
+   npm run pre-commit-check
 
-8. Configure lint-staged in package.json to run eslint --fix
-
-9. Install Jest + ts-jest + @types/jest:
+8. Install Jest + ts-jest + @types/jest:
    npm install -D jest ts-jest @types/jest  
    npx ts-jest config:init
 
-10. Install Prisma + Zod:
+9. Install Prisma + Zod:
     npm install @prisma/client zod  
     npm install -D prisma
 
-11. Create the basic folder structure: modules/, infra/, common/, and **tests**/
+10. Create the basic folder structure: modules/, infra/, common/, and **tests**/
 
 ## 📦 Commit Types (Conventional Commits)
 
