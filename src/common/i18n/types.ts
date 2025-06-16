@@ -10,7 +10,7 @@ export type Messages = {
         [rule: string]: string;
       };
     };
-    prisma: {
+    database: {
       unique: (field: string) => string;
       notFound: string;
       genericDb: string;
