@@ -5,5 +5,9 @@ export interface ErrorAdapterInterface {
   handle(
     error: unknown,
     messages: Messages,
-  ): { status: number; message?: string; errors: { message: string }[] };
+  ): {
+    status: number;
+    message?: string;
+    errors: { message: string; [key: string]: any }[];
+  };
 }
