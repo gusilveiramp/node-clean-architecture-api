@@ -23,7 +23,6 @@ export class PrismaErrorAdapter implements ErrorAdapterInterface {
     }
 
     if (error instanceof PrismaClientKnownRequestError) {
-      console.log("ERROR PRISMA", error);
       switch (error.code) {
         case "P2002": {
           const target = (error.meta?.target as string[])?.[0] ?? "undefined";
