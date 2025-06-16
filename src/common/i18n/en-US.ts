@@ -18,7 +18,7 @@ export const enUS: Messages = {
         invalid: "Invalid email format.",
       },
     },
-    prisma: {
+    database: {
       unique: (field) => `This ${field} is already registered.`,
       notFound: "Record not found.",
       genericDb: "Database error.",

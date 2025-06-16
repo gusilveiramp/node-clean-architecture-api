@@ -18,7 +18,7 @@ export const ptBR: Messages = {
         invalid: "Formato de e-mail inválido.",
       },
     },
-    prisma: {
+    database: {
       unique: (field) => `Este ${field} já foi cadastrado.`,
       notFound: "Registro não encontrado.",
       genericDb: "Erro de banco de dados.",

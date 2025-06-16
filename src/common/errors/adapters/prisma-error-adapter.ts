@@ -29,22 +29,22 @@ export class PrismaErrorAdapter implements ErrorAdapterInterface {
           const field = messages.fields[target] ?? target;
           return {
             status: 400,
-            message: messages.errors.prisma.unique(field),
-            errors: [{ field, message: messages.errors.prisma.unique(field) }],
+            message: messages.errors.database.unique(field),
+            errors: [{ field, message: messages.errors.database.unique(field) }],
           };
         }
         case "P2025": {
           return {
             status: 404,
-            message: messages.errors.prisma.notFound,
-            errors: [{ message: messages.errors.prisma.notFound }],
+            message: messages.errors.database.notFound,
+            errors: [{ message: messages.errors.database.notFound }],
           };
         }
         default:
           return {
             status: 400,
-            message: messages.errors.prisma.genericDb,
-            errors: [{ message: messages.errors.prisma.genericDb }],
+            message: messages.errors.database.genericDb,
+            errors: [{ message: messages.errors.database.genericDb }],
           };
       }
     }
