@@ -27,7 +27,7 @@ export class DatabaseModule {
 
   static async migrate() {
     if (env.NODE_ENV !== "test") {
-      throw new Error("Migrate is only allowed in test enviroment");
+      throw new Error("Migrate is only allowed in test environment");
     }
     await DatabaseModule.service.migrate();
   }

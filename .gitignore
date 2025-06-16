@@ -8,7 +8,7 @@ build/
 # Database & redis
 data/
 
-# Enviroment variables
+# Environment variables
 .env
 
 # Tests
