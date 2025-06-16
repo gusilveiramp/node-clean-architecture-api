@@ -7,7 +7,7 @@
   "author": "Gustavo Silveira",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/app.module.ts",
-    "build": "tsc && node dist/app.ts",
+    "build": "tsc && node dist/app.module.js",
     "lint": "eslint src --ext .ts",
     "test": "jest --config src/infra/testing/jest.config.ts",
     "test:watch": "jest --watch --config src/infra/testing/jest.config.ts",
