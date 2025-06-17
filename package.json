@@ -13,7 +13,8 @@
     "test:watch": "jest --watch --config src/infra/testing/jest.config.ts",
     "test:cov": "jest --coverage --config src/infra/testing/jest.config.ts",
     "test:e2e": "jest --config src/infra/testing/jest.e2e.config.ts",
-    "pre-commit-check": "npm run lint && npm run test"
+    "pre-commit-check": "npm run lint && npm run test",
+    "postinstall": "husky install"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
