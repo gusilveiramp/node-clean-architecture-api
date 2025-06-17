@@ -2,9 +2,9 @@ version: "3.8"
 
 services:
   # DB PostgreSQL
-  aivideo-db:
+  api-postgres:
     image: postgres:15
-    container_name: aivideo-postgres
+    container_name: api-postgres
     restart: unless-stopped
     ports:
       - ${POSTGRES_PORT}:5432
@@ -21,9 +21,9 @@ services:
       retries: 5
 
   # Redis
-  aivideo-redis:
+  api-redis:
     image: bitnami/redis:latest
-    container_name: aivideo-redis
+    container_name: api-redis
     restart: unless-stopped
     ports:
       - ${REDIS_PORT}:6379

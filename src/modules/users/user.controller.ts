@@ -11,14 +11,17 @@ import {
 import { UserRepository } from "./repositories/user.repository";
 import { CreateUserUseCase } from "./use-cases/create-user.use-case";
 import { UpdateUserUseCase } from "./use-cases/update-user.use-case";
+import { FindAllUsersUseCase } from "./use-cases/find-all-users.use-case";
 
 export class UserController {
   constructor(private repo: UserRepository) {}
+  private get messages() {
+    return getMessages();
+  }
 
   async create(req: Request, res: Response) {
     try {
-      const messages = getMessages();
-      const schema = CreateUserSchema(messages);
+      const schema = CreateUserSchema(this.messages);
       const parseResult = schema.safeParse(req.body);
 
       if (!parseResult.success) {
@@ -33,10 +36,18 @@ export class UserController {
     }
   }
 
-  async list(_req: Request, res: Response) {
+  async findAll(req: Request, res: Response) {
     try {
-      const users = await this.repo.findAll();
-      res.json(users);
+      const { keyword, page, limit } = req.query;
+
+      const useCase = new FindAllUsersUseCase(this.repo);
+      const result = await useCase.execute({
+        keyword: typeof keyword === "string" ? keyword : undefined,
+        page: page ? Number(page) : 1,
+        limit: limit ? Number(limit) : 10,
+      });
+
+      res.json(result);
     } catch (err) {
       errorResponse(res, err);
     }
@@ -44,10 +55,8 @@ export class UserController {
 
   async update(req: Request, res: Response) {
     try {
-      const messages = getMessages();
-
-      const bodySchema = UpdateUserSchema(messages);
-      const paramsSchema = UpdateUserParamsSchema(messages);
+      const bodySchema = UpdateUserSchema(this.messages);
+      const paramsSchema = UpdateUserParamsSchema(this.messages);
       const { body, params } = validateRequest(bodySchema, paramsSchema, req);
 
       const useCase = new UpdateUserUseCase(this.repo);

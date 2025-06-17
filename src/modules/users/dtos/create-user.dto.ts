@@ -1,10 +1,3 @@
-// export type CreateUserDTO = {
-//   name: string;
-//   email: string;
-// };
-
-// src/modules/users/dtos/create-user.dto.ts
-
 import { z } from "zod";
 import { Messages } from "../../../common/i18n/types";
 

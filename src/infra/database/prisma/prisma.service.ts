@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { DatabaseServiceInterface } from "../database.interface";
 import { execSync } from "node:child_process";
-import { env } from "../../config/env";
 
 export class PrismaService
   extends PrismaClient
@@ -25,8 +24,14 @@ export class PrismaService
   }
 
   async migrate() {
-    execSync(`DATABASE_URL="${env.DATABASE_URL}" npx prisma migrate deploy`, {
-      stdio: "inherit",
-    });
+    if (!process.env.DATABASE_URL) {
+      throw new Error("DATABASE_URL not set before migration!");
+    }
+    execSync(
+      `DATABASE_URL="${process.env.DATABASE_URL}" npx prisma migrate deploy`,
+      {
+        stdio: "inherit",
+      },
+    );
   }
 }

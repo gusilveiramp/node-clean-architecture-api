@@ -1,141 +1,179 @@
-# AI Video API
+# Node Clean Architecture API
 
-A clean and scalable Node.js API template built with TypeScript, Express, and Prisma, following Clean Architecture and SOLID principles.  
-Designed to serve as a solid foundation for modern back-end applications with proper structure, testing, linting, and formatting tools out of the box.
+A clean and scalable Node.js API template built with TypeScript, Express, and Prisma, following **Clean Architecture** and **SOLID** principles.
 
-## Features
+Designed as a production-ready starter for modern backend applications with modularity, testability, and infrastructure independence.
 
-- TypeScript + Express setup
-- Clean Architecture with modular structure
-- Prisma ORM with PostgreSQL support
-- Zod for data validation
-- Jest for unit testing
-- ESLint + Prettier integrated
-- Husky for Git hooks
-- Scripts for dev, build, test, and lint
-- Ready for CI/CD and scalable for production
+---
 
-## Project Structure (Clean Architecture)
+## ✨ Features
+
+- ✅ TypeScript + Express setup
+- ✅ Modular folder structure following **Clean Architecture**
+- ✅ Prisma ORM with PostgreSQL support
+- ✅ Zod for schema validation and runtime type safety
+- ✅ Centralized error handling with **Error Adapters**
+- ✅ Built-in internationalization (**i18n**) with request-scoped language detection
+- ✅ Jest for unit and E2E testing
+- ✅ ESLint + Prettier for linting and formatting
+- ✅ Husky for Git hooks (pre-commit checks)
+- ✅ Ready for CI/CD, production scaling, and infrastructure swap (ORM, HTTP layer, etc.)
+
+---
+
+## 📂 Project Structure
+
+````bash
+## 📂 Project Structure
 
 ```bash
-├── jest.config.ts
-├── jest.e2e.config.ts
+├── .env                                  # Project environment variables
+├── .env.example                          # Example environment variables for setup reference
+├── .gitignore
+├── client.http                           # HTTP client requests for testing APIs (e.g., REST Client in VSCode)
+├── commitlint.config.ts                  # Commit lint rules
+├── docker-compose.yml                    # Docker services (Postgres, etc.)
+├── eslint.config.mjs                     # ESLint configuration
+├── package.json
+├── package-lock.json
+├── README.md                             # Myself :)
+├── tsconfig.json
+│
+📁 prisma/                                 # Prisma migrations and schema
 │
 📁 src/
-├── app.module.ts                         # Entry point of the application. Responsible for initializing services and dependencies.
+├── app.module.ts                         # Application bootstrapper (loads all infra and modules)
 │
-├── 📁 modules/                           # Domain layer, organized by business features (e.g., users, payments).
-│   ├── user.controller.ts                # HTTP controller for the "users" module.
-│   ├── 📁 users/                          # Submodule containing user-specific business logic.
-│   ├── 📁 dtos/                           # Data Transfer Objects — define input/output data structures.
-│   ├── 📁 entities/                       # Core business entities (e.g., UserEntity).
-│   ├── 📁 use-cases/                      # Application use cases (e.g., create user).
-│   └── 📁 repositories/                   # Interfaces (abstractions) for data access. They don’t know the implementation.
+├── 📁 modules/                            # Domain layer (business logic and use cases)
+│   └── 📁 users/
+│       ├── dtos/                          # Zod DTOs for input validation (request body, params, etc.)
+│       ├── entities/                      # Domain entities (pure business models)
+│       ├── repositories/                  # Repository interfaces (contracts, no implementation here)
+│       ├── use-cases/                     # Application use cases (e.g., create, update, list users)
+│       └── user.controller.ts             # HTTP controller for user-related endpoints
 │
-├── 📁 infra/                             # Infrastructure layer: database, HTTP, queues, etc.
-│   ├── 📁 testing/
-│   │   └── setup-e2e.ts
+├── 📁 infra/                              # Infrastructure layer: database, HTTP server, configs, testing setup
+│   ├── 📁 config/
+│   │   └── env.ts                         # Parses and validates .env variables using Zod
 │   │
-│   ├── 📁 config/                         # Application configs (e.g., env, cache, global constants).
-│   │   └── env.ts                         # Parses and validates environment variables using Zod.
+│   ├── 📁 database/
+│   │   ├── database.interface.ts          # DB abstraction interface
+│   │   ├── database.module.ts             # Binds repository implementations and Prisma service
+│   │   └── 📁 prisma/
+│   │       ├── prisma.service.ts          # Prisma client instance and connection management
+│   │       ├── 📁 mappers/                # Converts Prisma models to domain entities
+│   │       │   └── user.mapper.ts
+│   │       └── 📁 repositories/           # Prisma-specific repository implementations
+│   │           └── user.repository.ts
 │   │
-│   ├── 📁 database/                       # Data persistence logic (ORMs, raw SQL, etc).
-│   │   ├── database.interface.ts          # Optional interface for DB service abstraction.
-│   │   ├── database.module.ts             # Initializes the database (connect, shutdown, bind repositories).
-│   │   └── 📁 prisma/                     # Prisma ORM implementation.
-│   │       ├── prisma.service.ts          # Encapsulates PrismaClient (connection, migrations, etc).
-│   │       ├── 📁 mappers/                # Converts between domain entities and Prisma models.
-│   │       │   └── user.mapper.ts         # Mapper for the User entity.
-│   │       └── 📁 repositories/           # Concrete repository implementations using Prisma.
-│   │           └── user.repository.ts     # User repository with Prisma logic.
+│   ├── 📁 http/
+│   │   ├── http.interface.ts              # HTTP interface definitions (Request, Response types, etc.)
+│   │   ├── http.module.ts                 # Exposes HTTP-layer dependencies (Express, routers, etc.)
+│   │   └── 📁 express/
+│   │       ├── express.service.ts         # Express app setup and server start
+│   │       ├── routes.ts                  # API route registration
+│   │       └── 📁 middlewares/            # Express middlewares
+│   │           ├── global-error.middleware.ts     # Centralized error handler
+│   │           ├── request-context.middleware.ts  # Initializes AsyncLocalStorage context
+│   │           └── route-not-found.middleware.ts  # Handles unknown routes (404)
 │   │
-│   └── 📁 http/                           # Transport layer (in this case, HTTP via Express).
-│       ├── http.module.ts                 # Exports HTTP types and services used in the app.
-│       └── 📁 express/                    # Express.js implementation.
-│           ├── express.service.ts         # Configures and starts the Express server.
-│           ├── routes.ts                  # Defines and registers API routes.
-│           └── 📁 middlewares/            # Express middlewares (auth, error handling, context, etc).
-│               ├── global-error.middleware.ts     # Global error handler middleware.
-│               ├── request-context.middleware.ts  # Sets request-level context (via AsyncLocalStorage).
-│               └── route-not-found.middleware.ts  # Returns custom error for unknown routes.
+│   └── 📁 testing/                        # Testing infrastructure (Jest configs, E2E setup)
+│       ├── jest.config.ts
+│       ├── jest.e2e.config.ts
+│       └── setup-e2e.ts                   # E2E test setup (DB cleanups, etc.)
 │
-└── 📁 common/                             # Reusable code shared across the app.
-    ├── 📁 context/                        # Request-level execution context (e.g., locale, requestId).
-    ├── 📁 errors/                         # Error handlers and adapters (e.g., Prisma, validation).
-    └── 📁 utils/                          # Generic utility functions and helpers.
+├── 📁 common/                             # Cross-cutting concerns and shared utilities
+│   ├── 📁 context/
+│   │   └── request-context.ts             # Per-request context (locale, requestId, etc.) using AsyncLocalStorage
+│   │
+│   ├── 📁 errors/
+│   │   ├── adapters/                      # Error adapters (Prisma, Zod, body-parser, etc.)
+│   │   │   ├── body-parser-error-adapter.ts
+│   │   │   ├── prisma-error-adapter.ts
+│   │   │   └── zod-error-adapter.ts
+│   │   ├── custom-error.ts                # Custom error class for manual error throws
+│   │   ├── error-adapter.interface.ts     # Adapter interface for error adapters
+│   │   ├── error-response.ts              # Standardizes error response shape
+│   │   └── types.ts                       # Error-related types
+│   │
+│   ├── 📁 i18n/                           # Internationalization (i18n) system for multi-language support
+│   │   ├── en-US.ts                      # English translations
+│   │   ├── pt-BR.ts                      # Brazilian Portuguese translations
+│   │   ├── index.ts                      # Language selector and i18n helpers
+│   │   └── types.ts                      # i18n message type contracts
+│   │
+│   └── 📁 utils/
+│       └── validate-request.ts            # Utility for validating request body and params together using Zod
 
-```
+
+````
 
 ## Getting Started
 
 ### 1. Clone and install dependencies
 
-git clone https://github.com/seu-usuario/ai-video-api.git  
-cd ai-video-api  
+```bash
+git clone https://github.com/seu-usuario/node-clean-architecture-api.git
+cd node-clean-architecture-api
 npm install
+```
 
 ### 2. Set up the environment
 
+```bash
 cp .env.example .env
+# Then edit your `.env` file as needed
+```
 
-# Edit the `.env` file with your own environment variables
+### 3. Run in development mode
 
-### 3. Initialize Husky (if not already activated)
-
-npm run prepare
-
-### 4. Start development server
-
+```bash
 npm run dev
+```
 
-### 5. Run tests
+### 4. Run tests
 
-npm test # runs all tests  
-npm run test:watch  
-npm run test:cov # coverage
+```bash
+npm test              # Run all tests
+npm run test:watch    # Watch mode
+npm run test:cov      # Test coverage
+```
 
 [Open Coverage Report](http://localhost:5500/coverage/lcov-report/index.html)
 
-### 6. Run lint and format
+### 5. Run lint and format
 
+```bash
 npm run lint
+```
 
 > Husky will also run automatically on pre-commit.
 
-## Tools & Libraries
+---
 
-- Language: TypeScript
-- Framework: Express
-- ORM: Prisma
-- Validation: Zod
-- Linting: ESLint + Prettier
-- Testing: Jest + ts-jest
-- Git Hooks: Husky
-- Dev runner: TSX
+## 🐳 Running with Docker (Optional)
+
+If you prefer, you can run the project inside Docker.
+
+```bash
+docker compose up -d
+```
+
+After that:
+
+```bash
+npx prisma migrate deploy
+```
+
+Access your API on:
+
+`API: http://localhost:3333`
+
+---
 
 ## 📐 Architectural Decisions & Rationale
 
 This project follows **Clean Architecture** and **SOLID** principles. Below are key design decisions and the reasoning behind them.
-
----
-
-### Error Handling (Error Adapters)
-
-- **Why?**  
-  To decouple infrastructure-specific errors (like Prisma, Sequelize, etc.) from the API’s public error contract.
-
-- **How?**  
-  Each external error source (ORMs, validation libraries, external services) has its own **Error Adapter**, implementing a common interface with two methods:
-
-| Method        | Responsibility                                                     |
-| ------------- | ------------------------------------------------------------------ |
-| `canHandle()` | Determines if the adapter can handle a given error type            |
-| `handle()`    | Transforms the original error into the API’s standard error format |
-
-- **Benefits:**  
-  ✅ Centralized and predictable error handling  
-  ✅ Easily extendable (e.g., adding a new SequelizeErrorAdapter in the future)  
-  ✅ The global error middleware remains untouched even as new adapters are added
 
 ---
 
@@ -201,6 +239,26 @@ This project follows **Clean Architecture** and **SOLID** principles. Below are 
 
 ---
 
+### Error Handling (Error Adapters)
+
+- **Why?**  
+  To decouple infrastructure-specific errors (like Prisma, Sequelize, etc.) from the API’s public error contract.
+
+- **How?**  
+  Each external error source (ORMs, validation libraries, external services) has its own **Error Adapter**, implementing a common interface with two methods:
+
+| Method        | Responsibility                                                     |
+| ------------- | ------------------------------------------------------------------ |
+| `canHandle()` | Determines if the adapter can handle a given error type            |
+| `handle()`    | Transforms the original error into the API’s standard error format |
+
+- **Benefits:**  
+  ✅ Centralized and predictable error handling  
+  ✅ Easily extendable (e.g., adding a new SequelizeErrorAdapter in the future)  
+  ✅ The global error middleware remains untouched even as new adapters are added
+
+---
+
 ### Global Error Middleware
 
 - **Why?**  
@@ -217,6 +275,26 @@ This project follows **Clean Architecture** and **SOLID** principles. Below are 
 
 ---
 
+### 🌐 Internationalization (i18n)
+
+This API supports **multi-language error messages**, making it ready for international projects or apps that serve users from different regions.
+
+- **Why?**  
+  To provide error messages and system responses in the client's preferred language.
+
+- **How?**  
+  The app reads the `Accept-Language` header from each request and loads the correct translation file (e.g., `pt-BR`, `en-US`) using a request-scoped context.
+
+- **Where?**  
+  Translations live inside `/src/common/i18n/`.
+
+- **Benefits:**  
+  ✅ Customizable multilingual error messages  
+  ✅ Fully translatable API responses (e.g., validation errors, system errors, database errors)  
+  ✅ Centralized message management
+
+---
+
 ### Summary
 
 This architecture ensures that:
@@ -225,45 +303,6 @@ This architecture ensures that:
 ✅ Infrastructure can evolve without affecting core business processes  
 ✅ Error handling is centralized, predictable, and easily extensible  
 ✅ The project remains maintainable, testable, and scalable over time
-
-## How I created this template (step by step)
-
-This README also serves as my own guide to replicate this setup in the future.
-
-### Steps:
-
-1. Initialize project:
-   npm init -y
-
-2. Install TypeScript and create tsconfig.json:
-   npm install -D typescript @types/node  
-   npx tsc --init
-
-3. Install TSX for development:
-   npm install -D tsx
-
-4. Configure ESLint + Prettier:
-   npm install -D eslint prettier eslint-plugin-prettier eslint-config-prettier @typescript-eslint/eslint-plugin @typescript-eslint/parser
-
-5. Create eslint.config.mjs and integrate with Prettier
-
-6. Set up Husky:
-   npm install -D husky
-   npx husky init
-   npm run prepare
-
-7. Edit .husky/pre-commit to run your checks:
-   npm run pre-commit-check
-
-8. Install Jest + ts-jest + @types/jest:
-   npm install -D jest ts-jest @types/jest  
-   npx ts-jest config:init
-
-9. Install Prisma + Zod:
-   npm install @prisma/client zod  
-   npm install -D prisma
-
-10. Create the basic folder structure: modules/, infra/, common/, and **tests**/
 
 ## 📦 Commit Types (Conventional Commits)
 

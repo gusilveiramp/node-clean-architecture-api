@@ -4,6 +4,7 @@ import { RequestContext } from "../../../../common/context/request-context";
 // Middleware que cria o contexto da request via AsyncLocalStorage
 // 1. Isso inicia um novo contexto assíncrono para essa requisição.
 //    Tudo que rodar dentro do next() (inclusive controllers, use-cases, Prisma, etc.) pode acessar esse mesmo contexto.
+
 // 2. Em qualquer lugar do seu app (controller, adapter, error handler, etc.)
 //    Você pode fazer: const lang = useRequestLanguage();
 //    Isso internamente usa RequestContext.get() pra recuperar o valor da request atual.

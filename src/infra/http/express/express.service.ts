@@ -38,4 +38,8 @@ export class ExpressService implements HttpServiceInterface {
       console.log(`🚀 Server running on port ${port}`);
     });
   }
+
+  getApp() {
+    return this.app;
+  }
 }

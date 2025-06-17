@@ -16,6 +16,7 @@ function generateTestDatabaseUrl(baseUrl: string, schemaId: string): string {
 
 beforeAll(async () => {
   console.log(`🧪 Using schema: ${schemaId}`);
+  await DatabaseModule.dropSchema(schemaId);
   await DatabaseModule.migrate();
   await DatabaseModule.init();
 });

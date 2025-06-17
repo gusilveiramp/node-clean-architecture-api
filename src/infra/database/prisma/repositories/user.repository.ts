@@ -1,4 +1,5 @@
 // src/infra/database/prisma/user.repository.ts
+import { Prisma } from "@prisma/client";
 import { UserEntity } from "../../../../modules/users/entities/user.entity";
 import { UserRepository } from "../../../../modules/users/repositories/user.repository";
 import { PrismaUserMapper } from "../mappers/user.mapper";
@@ -24,36 +25,36 @@ export class PrismaUserRepository implements UserRepository {
     const skip = (page - 1) * sanitizedLimit;
     const sanitizedKeyword = keyword?.trim().replace(/^"|"$/g, "");
 
-    // Fetch users with search filter
-    const users = await this.prismaService.user.findMany({
-      where: {
-        deletedAt: null,
-        ...(sanitizedKeyword
-          ? {
-              name: {
-                contains: sanitizedKeyword,
-                mode: "insensitive",
+    const whereClause: Prisma.UserWhereInput = {
+      deletedAt: null,
+      ...(sanitizedKeyword
+        ? {
+            OR: [
+              {
+                name: {
+                  contains: sanitizedKeyword,
+                  mode: Prisma.QueryMode.insensitive,
+                },
               },
-            }
-          : {}),
-      },
+              {
+                email: {
+                  contains: sanitizedKeyword,
+                  mode: Prisma.QueryMode.insensitive,
+                },
+              },
+            ],
+          }
+        : {}),
+    };
+
+    const users = await this.prismaService.user.findMany({
+      where: whereClause,
       skip,
       take: sanitizedLimit,
     });
 
-    // Count total records
     const total = await this.prismaService.user.count({
-      where: {
-        deletedAt: null,
-        ...(sanitizedKeyword
-          ? {
-              name: {
-                contains: sanitizedKeyword,
-                mode: "insensitive",
-              },
-            }
-          : {}),
-      },
+      where: whereClause,
     });
 
     return {

@@ -11,7 +11,7 @@ export class DatabaseModule {
 
   static async init() {
     await DatabaseModule.service.connect();
-    // console.log("🔋 Database module initialized");
+    console.log("🔋 Database module initialized");
   }
 
   static async shutdown() {
