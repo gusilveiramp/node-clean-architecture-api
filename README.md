@@ -134,12 +134,19 @@ npm run dev
 ### 4. Run tests
 
 ```bash
-npm test              # Run all tests
+npm test              # Run unit and integration tests
+npm run test:e2e      # Run end-to-end tests
 npm run test:watch    # Watch mode
-npm run test:cov      # Test coverage
+npm run test:cov      # Generate test coverage report
 ```
 
-[Open Coverage Report](http://localhost:5500/coverage/lcov-report/index.html)
+> The E2E tests use a separate Jest config and a dedicated Postgres schema for isolation.
+
+After running the coverage command, you can open the report locally by opening this file in your browser:
+
+```
+./coverage/lcov-report/index.html
+```
 
 ### 5. Run lint and format
 
