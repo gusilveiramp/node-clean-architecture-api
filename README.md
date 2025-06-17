@@ -23,10 +23,10 @@ Designed as a production-ready starter for modern backend applications with modu
 
 ## 📂 Project Structure
 
-````bash
+```bash
+
 ## 📂 Project Structure
 
-```bash
 ├── .env                                  # Project environment variables
 ├── .env.example                          # Example environment variables for setup reference
 ├── .gitignore
@@ -106,7 +106,7 @@ Designed as a production-ready starter for modern backend applications with modu
 │       └── validate-request.ts            # Utility for validating request body and params together using Zod
 
 
-````
+```
 
 ## Getting Started
 
