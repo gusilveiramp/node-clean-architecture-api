@@ -4,6 +4,7 @@ import {
 } from "@prisma/client/runtime/library";
 import { Messages } from "../../i18n/types";
 import { ErrorAdapterInterface } from "../error-adapter.interface";
+import { CustomErrorResponse } from "../types";
 
 export class PrismaErrorAdapter implements ErrorAdapterInterface {
   canHandle(error: unknown): boolean {
@@ -13,12 +14,35 @@ export class PrismaErrorAdapter implements ErrorAdapterInterface {
     );
   }
 
-  handle(error: unknown, messages: Messages) {
+  handle(error: unknown, messages: Messages): CustomErrorResponse {
     if (error instanceof PrismaClientValidationError) {
+      const missingFieldMatch = error.message.match(
+        /Argument `(.*?)` is missing/,
+      );
+
+      if (missingFieldMatch) {
+        const field = missingFieldMatch[1];
+
+        return {
+          status: 400,
+          message: messages.errors.generic.validation,
+          errors: [
+            {
+              field,
+              message: `The field '${field}' is required.`,
+            },
+          ],
+        };
+      }
+
       return {
         status: 400,
         message: messages.errors.generic.validation,
-        errors: [{ message: messages.errors.generic.validation }],
+        errors: [
+          {
+            message: messages.errors.generic.validation,
+          },
+        ],
       };
     }
 
@@ -26,11 +50,15 @@ export class PrismaErrorAdapter implements ErrorAdapterInterface {
       switch (error.code) {
         case "P2002": {
           const target = (error.meta?.target as string[])?.[0] ?? "undefined";
-          const field = messages.fields[target] ?? target;
           return {
             status: 400,
-            message: messages.errors.database.unique(field),
-            errors: [{ field, message: messages.errors.database.unique(field) }],
+            message: messages.errors.database.unique(target),
+            errors: [
+              {
+                field: target,
+                message: messages.errors.database.unique(target),
+              },
+            ],
           };
         }
         case "P2025": {

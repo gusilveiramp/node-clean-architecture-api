@@ -13,6 +13,7 @@ describe("CreateUserUseCase", () => {
     findById: jest.fn(),
     create: jest.fn().mockResolvedValue(mockUser),
     findAll: jest.fn(),
+    update: jest.fn(),
   };
 
   it("should create a user and return it", async () => {

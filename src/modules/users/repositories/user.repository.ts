@@ -3,6 +3,7 @@ import { UserEntity } from "../entities/user.entity";
 export interface UserRepository {
   findById(id: number): Promise<UserEntity | null>;
   create(user: UserEntity): Promise<UserEntity>;
+  update(user: UserEntity): Promise<UserEntity>;
   findAll(
     keyword?: string,
     page?: number,

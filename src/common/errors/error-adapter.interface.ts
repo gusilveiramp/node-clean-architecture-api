@@ -1,13 +1,8 @@
+// src/common/errors/error-adapter.interface.ts
 import { Messages } from "../i18n/types";
+import { CustomErrorResponse } from "./types";
 
 export interface ErrorAdapterInterface {
   canHandle(error: unknown): boolean;
-  handle(
-    error: unknown,
-    messages: Messages,
-  ): {
-    status: number;
-    message?: string;
-    errors: { message: string; [key: string]: any }[];
-  };
+  handle(error: unknown, messages: Messages): CustomErrorResponse;
 }

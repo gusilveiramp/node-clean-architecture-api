@@ -113,6 +113,119 @@ npm run lint
 - Git Hooks: Husky
 - Dev runner: TSX
 
+## 📐 Architectural Decisions & Rationale
+
+This project follows **Clean Architecture** and **SOLID** principles. Below are key design decisions and the reasoning behind them.
+
+---
+
+### Error Handling (Error Adapters)
+
+- **Why?**  
+  To decouple infrastructure-specific errors (like Prisma, Sequelize, etc.) from the API’s public error contract.
+
+- **How?**  
+  Each external error source (ORMs, validation libraries, external services) has its own **Error Adapter**, implementing a common interface with two methods:
+
+| Method        | Responsibility                                                     |
+| ------------- | ------------------------------------------------------------------ |
+| `canHandle()` | Determines if the adapter can handle a given error type            |
+| `handle()`    | Transforms the original error into the API’s standard error format |
+
+- **Benefits:**  
+  ✅ Centralized and predictable error handling  
+  ✅ Easily extendable (e.g., adding a new SequelizeErrorAdapter in the future)  
+  ✅ The global error middleware remains untouched even as new adapters are added
+
+---
+
+### Folder Structure (Clean Architecture Layers)
+
+- **Why?**  
+  To enforce strict separation between application layers and responsibilities.
+
+| Folder     | Responsibility                                                        |
+| ---------- | --------------------------------------------------------------------- |
+| `modules/` | Business logic: entities, use cases, repository interfaces, DTOs      |
+| `infra/`   | Infrastructure: database, HTTP server, external services              |
+| `common/`  | Cross-cutting concerns: error handling, context management, utilities |
+
+- **Benefits:**  
+  ✅ Infrastructure can evolve or be replaced (e.g., switch from Prisma to Sequelize) without impacting the business logic  
+  ✅ Clear boundaries improve testability and scalability
+
+---
+
+### Repositories and Adapters (Database Abstraction)
+
+- **Why?**  
+  To abstract data access and **avoid tight coupling to any specific ORM or database technology**.
+
+- **How?**  
+  Business logic depends only on repository interfaces (inside `modules/`).  
+  Concrete implementations (like `PrismaUserRepository`) live inside `infra/database/`.
+
+- **Benefits:**  
+  ✅ Swapping database providers (e.g., from Prisma to Sequelize or raw SQL) requires only creating a new repository implementation  
+  ✅ No changes needed in the business logic or use cases
+
+---
+
+### Request Context (Per-Request Scoped Data)
+
+- **Why?**  
+  To provide **request-scoped context** (like `Accept-Language` for internationalization) throughout the application **without manually passing it between layers**.
+
+- **How?**  
+  Using **AsyncLocalStorage**, a context is created for each incoming HTTP request.  
+  Any part of the app (use cases, error adapters, services) can access the context at runtime.
+
+- **Benefits:**  
+  ✅ Clean and uncluttered function signatures  
+  ✅ No need to pass request metadata manually through every layer
+
+---
+
+### DTO Validation with Zod
+
+- **Why?**  
+  To ensure incoming HTTP request data adheres to the expected structure and data types.
+
+- **How?**  
+  Each DTO uses **Zod schemas** for validation.  
+  If validation fails, a **ZodErrorAdapter** converts the error into the standard API error response format.
+
+- **Benefits:**  
+  ✅ Automatic input validation at the controller layer  
+  ✅ Consistent, translatable error messages
+
+---
+
+### Global Error Middleware
+
+- **Why?**  
+  To have a single, centralized place responsible for handling all unhandled errors from any part of the application.
+
+- **How?**  
+  The middleware iterates through all registered ErrorAdapters.  
+  The first adapter that returns `canHandle() === true` will process the error and return a standardized API error response.
+
+- **Benefits:**  
+  ✅ Predictable error output for API consumers  
+  ✅ No risk of leaking stack traces or internal error details  
+  ✅ Ready for extension as the system grows
+
+---
+
+### Summary
+
+This architecture ensures that:
+
+✅ Business logic remains independent from frameworks and infrastructure  
+✅ Infrastructure can evolve without affecting core business processes  
+✅ Error handling is centralized, predictable, and easily extensible  
+✅ The project remains maintainable, testable, and scalable over time
+
 ## How I created this template (step by step)
 
 This README also serves as my own guide to replicate this setup in the future.
@@ -147,8 +260,8 @@ This README also serves as my own guide to replicate this setup in the future.
    npx ts-jest config:init
 
 9. Install Prisma + Zod:
-    npm install @prisma/client zod  
-    npm install -D prisma
+   npm install @prisma/client zod  
+   npm install -D prisma
 
 10. Create the basic folder structure: modules/, infra/, common/, and **tests**/
 

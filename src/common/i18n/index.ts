@@ -1,7 +1,9 @@
+// src/common/errors/i18n/index.ts
+
 import { ptBR } from "./pt-BR";
 import { enUS } from "./en-US";
-import { Messages } from "./types";
 import { useRequestLanguage } from "../context/request-context";
+import { Messages } from "./types";
 
 const locales = {
   "pt-BR": ptBR,

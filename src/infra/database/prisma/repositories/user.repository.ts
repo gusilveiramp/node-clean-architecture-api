@@ -6,6 +6,14 @@ import { PrismaService } from "../prisma.service";
 
 export class PrismaUserRepository implements UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
+  async update(user: UserEntity): Promise<UserEntity> {
+    const updatedUser = await this.prismaService.user.update({
+      where: { id: user.id },
+      data: PrismaUserMapper.toPrisma(user),
+    });
+
+    return PrismaUserMapper.toEntity(updatedUser);
+  }
 
   async findAll(
     keyword?: string,
