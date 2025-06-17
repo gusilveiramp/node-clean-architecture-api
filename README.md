@@ -36,7 +36,7 @@ Designed as a production-ready starter for modern backend applications with modu
 ├── eslint.config.mjs                     # ESLint configuration
 ├── package.json
 ├── package-lock.json
-├── README.md                             # Myself :)
+├── README.md                             # Yep, that's me
 ├── tsconfig.json
 │
 📁 prisma/                                 # Prisma migrations and schema
