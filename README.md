@@ -113,7 +113,7 @@ Designed as a production-ready starter for modern backend applications with modu
 ### 1. Clone and install dependencies
 
 ```bash
-git clone https://github.com/seu-usuario/node-clean-architecture-api.git
+git clone https://github.com/gusilveiramp/node-clean-architecture-api.git
 cd node-clean-architecture-api
 npm install
 ```
