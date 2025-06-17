@@ -1,13 +1,11 @@
 import { UserRepository } from "../../modules/users/repositories/user.repository";
-import { env } from "../config/env";
+import { env } from "../config/env.config";
 import { PrismaService } from "./prisma/prisma.service";
 import { PrismaUserRepository } from "./prisma/repositories/user.repository";
 
 export class DatabaseModule {
   static service = new PrismaService();
-  static userRepository: UserRepository = new PrismaUserRepository(
-    DatabaseModule.service,
-  );
+  static userRepository: UserRepository = new PrismaUserRepository(DatabaseModule.service);
 
   static async init() {
     await DatabaseModule.service.connect();

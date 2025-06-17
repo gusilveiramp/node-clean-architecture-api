@@ -5,17 +5,17 @@ export function CreateUserSchema(messages: Messages) {
   return z.object({
     name: z
       .string({
-        required_error: messages.errors.zod.name.required,
-        invalid_type_error: messages.errors.zod.name.invalidType,
+        required_error: messages.validation.string.required,
+        invalid_type_error: messages.validation.string.invalid,
       })
-      .min(3, messages.errors.zod.name.min),
+      .min(3, messages.validation.string.minLength),
 
     email: z
       .string({
-        required_error: messages.errors.zod.email.required,
-        invalid_type_error: messages.errors.zod.email.invalidType,
+        required_error: messages.validation.email.required,
+        invalid_type_error: messages.validation.string.invalid,
       })
-      .email(messages.errors.zod.email.invalid),
+      .email(messages.validation.email.invalid),
   });
 }
 

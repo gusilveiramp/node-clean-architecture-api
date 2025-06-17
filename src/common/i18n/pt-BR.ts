@@ -1,7 +1,24 @@
-// src/common/errors/i18n/pt-BR.ts
 import { Messages } from "./types";
 
 export const ptBR: Messages = {
+  validation: {
+    string: {
+      required: "O campo é obrigatório.",
+      invalid: "Valor inválido para texto.",
+      minLength: "O campo deve ter pelo menos {min} caracteres.",
+      fullName: "Informe nome e sobrenome.",
+    },
+    number: {
+      required: "O campo numérico é obrigatório.",
+      invalid: "Valor inválido para número.",
+      min: "O valor mínimo permitido é {min}.",
+    },
+    email: {
+      required: "O e-mail é obrigatório.",
+      invalid: "Formato de e-mail inválido.",
+    },
+  },
+
   errors: {
     generic: {
       validation: "Erro de validação nos dados enviados.",
@@ -9,23 +26,6 @@ export const ptBR: Messages = {
       routeNotFound: "Rota não encontrada.",
       invalidBody:
         "Corpo da requisição inválido ou ausente. Verifique o Content-Type e o formato JSON.",
-    },
-    zod: {
-      id: {
-        required: "O ID do usuário é obrigatório.",
-        invalidType: "O ID deve ser um número.",
-      },
-      name: {
-        required: "O nome é obrigatório.",
-        min: "O nome deve ter pelo menos 3 caracteres.",
-        fullName: "Informe nome e sobrenome.",
-        invalidType: "O nome deve ser um texto.",
-      },
-      email: {
-        required: "O e-mail é obrigatório.",
-        invalid: "Formato de e-mail inválido.",
-        invalidType: "O e-mail deve ser um texto.",
-      },
     },
 
     database: {
@@ -37,9 +37,4 @@ export const ptBR: Messages = {
       },
     },
   },
-  // fields: {
-  //   email: "e-mail",
-  //   name: "nome",
-  //   username: "nome de usuário",
-  // },
 };

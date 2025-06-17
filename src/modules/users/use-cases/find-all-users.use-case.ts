@@ -14,10 +14,6 @@ export class FindAllUsersUseCase {
     users: UserEntity[];
     total: number;
   }> {
-    return this.userRepository.findAll(
-      params.keyword,
-      params.page,
-      params.limit,
-    );
+    return this.userRepository.findAll(params.keyword, params.page, params.limit);
   }
 }

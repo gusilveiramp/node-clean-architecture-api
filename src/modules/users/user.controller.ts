@@ -3,10 +3,7 @@ import { getMessages } from "../../common/i18n";
 import { validateRequest } from "../../common/utils/validate-request";
 import { Request, Response } from "../../infra/http/http.module";
 import { CreateUserSchema } from "./dtos/create-user.dto";
-import {
-  UpdateUserParamsSchema,
-  UpdateUserSchema,
-} from "./dtos/update-user.dto";
+import { UpdateUserParamsSchema, UpdateUserSchema } from "./dtos/update-user.dto";
 
 import { UserRepository } from "./repositories/user.repository";
 import { CreateUserUseCase } from "./use-cases/create-user.use-case";

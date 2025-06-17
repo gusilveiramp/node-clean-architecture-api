@@ -36,6 +36,11 @@ export default [
         "error",
         {
           endOfLine: "auto",
+          trailingComma: "all", // ← Isso que está causando o erro, mas é o correto pra muitos times
+          semi: true,
+          singleQuote: false,
+          printWidth: 100,
+          tabWidth: 2,
         },
       ],
     },

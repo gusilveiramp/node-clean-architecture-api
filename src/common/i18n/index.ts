@@ -2,7 +2,7 @@
 
 import { ptBR } from "./pt-BR";
 import { enUS } from "./en-US";
-import { useRequestLanguage } from "../context/request-context";
+import { useRequestLanguage } from "../context/request.context";
 import { Messages } from "./types";
 
 const locales = {

@@ -7,9 +7,7 @@ export function validateRequest<TBody = unknown, TParams = unknown>(
   req: Request,
 ): { body: TBody; params: TParams } {
   const parsedBody = bodySchema ? bodySchema.parse(req.body) : ({} as TBody);
-  const parsedParams = paramsSchema
-    ? paramsSchema.parse(req.params)
-    : ({} as TParams);
+  const parsedParams = paramsSchema ? paramsSchema.parse(req.params) : ({} as TParams);
 
   return { body: parsedBody, params: parsedParams };
 }

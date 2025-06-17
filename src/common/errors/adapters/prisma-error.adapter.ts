@@ -9,16 +9,13 @@ import { CustomErrorResponse } from "../types";
 export class PrismaErrorAdapter implements ErrorAdapterInterface {
   canHandle(error: unknown): boolean {
     return (
-      error instanceof PrismaClientKnownRequestError ||
-      error instanceof PrismaClientValidationError
+      error instanceof PrismaClientKnownRequestError || error instanceof PrismaClientValidationError
     );
   }
 
   handle(error: unknown, messages: Messages): CustomErrorResponse {
     if (error instanceof PrismaClientValidationError) {
-      const missingFieldMatch = error.message.match(
-        /Argument `(.*?)` is missing/,
-      );
+      const missingFieldMatch = error.message.match(/Argument `(.*?)` is missing/);
 
       if (missingFieldMatch) {
         const field = missingFieldMatch[1];

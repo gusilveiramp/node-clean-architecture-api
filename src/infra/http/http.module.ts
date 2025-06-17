@@ -1,4 +1,4 @@
-import { env } from "../config/env";
+import { env } from "../config/env.config";
 import type { Server } from "node:http";
 import {
   ExpressService,

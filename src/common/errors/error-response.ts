@@ -1,15 +1,15 @@
 // src/common/errors/error-response.ts
 
 import { Response } from "../../infra/http/http.module";
-import { useRequestLanguage } from "../context/request-context";
-import { PrismaErrorAdapter } from "./adapters/prisma-error-adapter";
+import { useRequestLanguage } from "../context/request.context";
+import { PrismaErrorAdapter } from "./adapters/prisma-error.adapter";
 import { CustomError } from "./custom-error";
 import { ErrorAdapterInterface } from "./error-adapter.interface";
 import { getMessages } from "../i18n";
 import { CustomErrorResponse } from "./types";
-import { ZodErrorAdapter } from "./adapters/zod-error-adapter";
+import { ZodErrorAdapter } from "./adapters/zod-error.adapter";
 import { ZodError } from "zod";
-import { BodyParserErrorAdapter } from "./adapters/body-parser-error-adapter";
+import { BodyParserErrorAdapter } from "./adapters/body-parser-error.adapter";
 
 const errorAdapters: ErrorAdapterInterface[] = [
   new PrismaErrorAdapter(),
