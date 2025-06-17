@@ -108,7 +108,7 @@ Designed as a production-ready starter for modern backend applications with modu
 
 ```
 
-## Getting Started
+## 🚀 Getting Started
 
 ### 1. Clone and install dependencies
 
@@ -275,7 +275,7 @@ This project follows **Clean Architecture** and **SOLID** principles. Below are 
 
 ---
 
-### 🌐 Internationalization (i18n)
+## 🌐 Internationalization (i18n)
 
 This API supports **multi-language error messages**, making it ready for international projects or apps that serve users from different regions.
 
