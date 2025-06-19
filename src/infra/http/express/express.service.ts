@@ -8,11 +8,12 @@ export type Request = ExpressRequest;
 export type Response = ExpressResponse;
 export type NextFunction = ExpressNextFunction;
 
-import router from "./routes";
 import { requestContextMiddleware } from "./middlewares/request-context.middleware";
 import { GlobalErrorMiddleware } from "./middlewares/global-error.middleware";
 import { RouteNotFoundMiddleware } from "./middlewares/route-not-found.middleware";
 import { HttpServiceInterface } from "../http.interface";
+
+import { router } from "./routes";
 
 export class ExpressService implements HttpServiceInterface {
   private app = express();

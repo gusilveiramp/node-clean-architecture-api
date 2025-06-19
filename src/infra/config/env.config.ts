@@ -7,6 +7,9 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("production"),
   NODE_PORT: z.coerce.number().default(3333),
   DATABASE_URL: z.string().url(),
+  REDIS_HOST: z.string().default("127.0.0.1"),
+  REDIS_PORT: z.coerce.number().default(6379),
+  REDIS_PASSWORD: z.string(),
 });
 
 // Validação

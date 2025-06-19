@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  api:
+    command: npm run prod:api
+    environment:
+      - NODE_ENV=production
+
+  worker:
+    command: npm run prod:worker
+    environment:
+      - NODE_ENV=production
+
+  postgres:
+    ports: []
+
+  redis:
+    ports: []
