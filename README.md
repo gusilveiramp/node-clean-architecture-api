@@ -13,6 +13,7 @@ Designed as a production-ready starter for modern backend applications with modu
 - ✅ Prisma ORM with PostgreSQL support
 - ✅ Zod for schema validation and runtime type safety
 - ✅ Centralized error handling with **Error Adapters**
+- ✅ Background job processing with **BullMQ + Redis** (Queue Workers module)
 - ✅ Built-in internationalization (**i18n**) with request-scoped language detection
 - ✅ Jest for unit and E2E testing
 - ✅ ESLint + Prettier for linting and formatting
@@ -76,6 +77,15 @@ Designed as a production-ready starter for modern backend applications with modu
 │   │           ├── global-error.middleware.ts     # Centralized error handler
 │   │           ├── request-context.middleware.ts  # Initializes AsyncLocalStorage context
 │   │           └── route-not-found.middleware.ts  # Handles unknown routes (404)
+│   │
+│   ├── 📁 queues/
+│   │   ├── queue.interface.ts             # Queue abstraction interface (decouples infrastructure from business logic)
+│   │   ├── queue.module.ts                # Queue lifecycle manager (init/shutdown for workers)
+│   │   ├── queue.bootstrap.ts             # Standalone bootstrapper to run queue workers as a separate process
+│   │   └── 📁 bullmq/
+│   │       ├── bullmq-queue.service.ts    # BullMQ implementation of the Queue interface
+│   │       └── 📁 workers/                # Queue workers (e.g., email, file processing)
+│   │           └── email.worker.ts
 │   │
 │   └── 📁 testing/                        # Testing infrastructure (Jest configs, E2E setup)
 │       ├── jest.config.ts
@@ -279,6 +289,32 @@ This project follows **Clean Architecture** and **SOLID** principles. Below are 
   ✅ Predictable error output for API consumers  
   ✅ No risk of leaking stack traces or internal error details  
   ✅ Ready for extension as the system grows
+
+---
+
+### Queue Workers (Background Processing)
+
+- **Why?**  
+  To offload time-consuming or non-blocking tasks (like sending emails, processing files, etc.) to background workers, avoiding performance impacts on HTTP requests.
+
+- **How?**  
+  The system uses **BullMQ + Redis** for queue management and background job processing.
+
+- **Where?**  
+  All queue-related infrastructure lives inside `/src/infra/queues/`.  
+  The **`queue.interface.ts`** defines a generic queue contract to decouple the business logic from the infrastructure.  
+  The **BullMQ-specific implementation** lives inside `/bullmq/`.  
+  Each queue worker is defined as a separate file inside `/bullmq/workers/`.
+
+- **Execution Flow:**  
+  The queue system runs in a **separate Node.js process**, fully independent from the HTTP server.  
+  This is handled via a standalone bootstrapper:  
+  **`queue.bootstrap.ts` → started via the script `npm run dev:worker`**
+
+- **Benefits:**  
+  ✅ Full decoupling between API and background workers  
+  ✅ Scalable: You can run multiple worker instances without affecting the API  
+  ✅ Pluggable: Easily replace BullMQ with Kafka, RabbitMQ, or any other queue system in the future
 
 ---
 
