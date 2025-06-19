@@ -26,6 +26,7 @@ const config: Config = {
     "!src/infra/testing/**",
     "!src/infra/config/env.ts", // se quiser ignorar env
   ],
+  setupFilesAfterEnv: ["<rootDir>/src/infra/testing/setup.ts"],
 };
 
 export default config;

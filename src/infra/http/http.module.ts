@@ -5,13 +5,14 @@ import {
   Request as ExpressRequest,
   Response as ExpressResponse,
 } from "./express/express.service";
+import { ExpressHandler } from "./express/adapters/express-router.adapter";
 
 export class HttpModule {
   static http = new ExpressService();
   private static server: Server | null = null;
 
   static async init() {
-    // Aqui poderia ter setup de APM, Sentry, middlewares externos, etc.
+    // Aqui poderíamos adicionar setup de APMs, Sentry, middlewares globais externos etc.
     HttpModule.server = HttpModule.http.listen(env.NODE_PORT);
     console.log("📟 Http module initialized");
   }
@@ -29,6 +30,7 @@ export class HttpModule {
   }
 }
 
-// Essa parte é essencial pro uso correto de tipos
+// Exportando os tipos HTTP (Request, Response, HttpHandler) de forma padronizada
 export type Request = ExpressRequest;
 export type Response = ExpressResponse;
+export type HttpHandler = ExpressHandler;

@@ -1,6 +1,9 @@
-import "./bullmq/workers/email.worker";
+import { BullmqQueueService } from "./bullmq/bullmq.service";
+import { QueueInterface } from "./queue.interface";
 
 export class QueueModule {
+  static queueService: QueueInterface = new BullmqQueueService();
+
   static async init() {
     console.log("🚀 QueueModule initialized and workers registered.");
     // Aqui no futuro: inicialização de outras dependências de fila, se precisar

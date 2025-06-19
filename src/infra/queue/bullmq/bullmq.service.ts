@@ -10,6 +10,13 @@ export class BullmqQueueService implements QueueInterface {
   }
 
   // Aqui no futuro você pode adicionar mais filas
-  // async addOcrJob() { ... }
   // async addPdfJob() { ... }
+
+  async close(): Promise<void> {
+    await Promise.all([
+      this.emailQueue.close(),
+      // this.pdfQueue.close()
+      // etc...
+    ]);
+  }
 }

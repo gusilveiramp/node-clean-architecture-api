@@ -14,11 +14,12 @@ Designed as a production-ready starter for modern backend applications with modu
 - ✅ Zod for schema validation and runtime type safety
 - ✅ Centralized error handling with **Error Adapters**
 - ✅ Background job processing with **BullMQ + Redis** (Queue Workers module)
+- ✅ HTTP transport layer abstraction with support for future adapters (Express, Fastify, etc)
 - ✅ Built-in internationalization (**i18n**) with request-scoped language detection
 - ✅ Jest for unit and E2E testing
 - ✅ ESLint + Prettier for linting and formatting
 - ✅ Husky for Git hooks (pre-commit checks)
-- ✅ Ready for CI/CD, production scaling, and infrastructure swap (ORM, HTTP layer, etc.)
+- ✅ Ready for CI/CD, production scaling, and infrastructure swap (ORM, Queue, HTTP layer, etc.)
 
 ---
 
@@ -70,13 +71,18 @@ Designed as a production-ready starter for modern backend applications with modu
 │   ├── 📁 http/
 │   │   ├── http.interface.ts              # HTTP interface definitions (Request, Response types, etc.)
 │   │   ├── http.module.ts                 # Exposes HTTP-layer dependencies (Express, routers, etc.)
-│   │   └── 📁 express/
-│   │       ├── express.service.ts         # Express app setup and server start
-│   │       ├── routes.ts                  # API route registration
-│   │       └── 📁 middlewares/            # Express middlewares
-│   │           ├── global-error.middleware.ts     # Centralized error handler
-│   │           ├── request-context.middleware.ts  # Initializes AsyncLocalStorage context
-│   │           └── route-not-found.middleware.ts  # Handles unknown routes (404)
+│   │   ├── 📁 express/
+│   │   │   ├── express.service.ts         # Express app setup and server start
+│   │   │   ├── 📁 adapters/
+│   │   │   │   └── express-router.adapter.ts   # Express-specific HTTP adapter (HttpRouter implementation)
+│   │   │   └── 📁 middlewares/            # Express middlewares
+│   │   │       ├── global-error.middleware.ts     # Centralized error handler
+│   │   │       ├── request-context.middleware.ts  # Initializes AsyncLocalStorage context
+│   │   │       └── route-not-found.middleware.ts  # Handles unknown routes (404)
+│   │   │
+│   │   └── 📁 routes/
+│   │       ├── healthcheck.routes.ts      # Infra-specific routes like healthcheck, status, etc.
+│   │       └── users.routes.ts             # User module routes
 │   │
 │   ├── 📁 queues/
 │   │   ├── queue.interface.ts             # Queue abstraction interface (decouples infrastructure from business logic)
@@ -318,7 +324,88 @@ This project follows **Clean Architecture** and **SOLID** principles. Below are 
 
 ---
 
-## 🌐 Internationalization (i18n)
+### HTTP Layer and Router Abstraction
+
+- **Why?**  
+  To allow the project to switch from Express to Fastify (or any other framework) in the future with minimal changes.
+
+- **How?**  
+  The project defines a generic `HttpRouter` interface in `/infra/http/http.interface.ts`.  
+  The **Express-specific implementation** lives inside `/infra/http/express/adapters/express-router.adapter.ts`.
+
+  Business modules and route files **never import Express types directly**.  
+  Instead, they rely on the generic `HttpRouter` and `HttpHandler` types, which are exposed centrally from the `HttpModule`.
+
+- **Where do routes live?**  
+  All route registration functions (like `registerUserRoutes`, `registerHealthCheckRoutes`) live inside `/infra/http/routes/`.  
+  Each module has its own route registration file (e.g., `user.routes.ts`, `payment.routes.ts`, etc).
+
+- **How are routes registered?**  
+  Inside the `ExpressService`, each route registration function is called manually, using the current HTTP adapter.
+
+- **Benefits:**  
+  ✅ HTTP framework agnostic (easily swap Express for Fastify or others)  
+  ✅ Centralized router management  
+  ✅ Consistent pattern for all modules  
+  ✅ Clean separation between transport layer and business logic
+
+---
+
+### Composition Root Pattern (Module-Level Dependency Wiring)
+
+- **Why?**  
+  To centralize dependency composition for each module, making the system highly decoupled, testable, and infrastructure-agnostic.
+
+- **How?**  
+  Each module (like `UserModule`, `PaymentModule`, etc) has a static method (typically called `getXController()`) that wires all necessary dependencies (repositories, queue services, etc) and returns a fully constructed Controller.
+
+- **Where?**  
+  Inside each module folder, as a `user.module.ts`, `payment.module.ts`, etc.
+
+- **Example flow for Users:**
+
+| Layer             | Responsibility                                                         |
+| ----------------- | ---------------------------------------------------------------------- |
+| `DatabaseModule`  | Exposes repositories (ex: `userRepository`)                            |
+| `QueueModule`     | Exposes the Queue service                                              |
+| `UserModule`      | Wires repositories and services into UseCases                          |
+| `UserController`  | Gets all UseCases already injected and ready                           |
+| `users.routes.ts` | Simply imports the Controller from `UserModule` and binds it to routes |
+
+- **Benefits:**  
+  ✅ Full inversion of control at module level  
+  ✅ Clear module composition boundaries  
+  ✅ No direct infrastructure imports inside controllers or use cases  
+  ✅ Simplifies future DI Container migration if needed  
+  ✅ Extremely testable (easy to inject mocks in unit tests)
+
+- **UserModule Example:**
+
+```typescript
+export class UserModule {
+  static getUserController(): UserController {
+    const userRepository = DatabaseModule.userRepository;
+    const queueService = QueueModule.queueService;
+
+    const createUserUseCase = new CreateUserUseCase(
+      userRepository,
+      queueService
+    );
+    const updateUserUseCase = new UpdateUserUseCase(userRepository);
+    const findAllUsersUseCase = new FindAllUsersUseCase(userRepository);
+
+    return new UserController(
+      createUserUseCase,
+      updateUserUseCase,
+      findAllUsersUseCase
+    );
+  }
+}
+```
+
+---
+
+### Internationalization (i18n)
 
 This API supports **multi-language error messages**, making it ready for international projects or apps that serve users from different regions.
 
