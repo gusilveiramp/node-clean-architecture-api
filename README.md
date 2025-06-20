@@ -96,7 +96,8 @@ Designed as a production-ready starter for modern backend applications with modu
 │   └── 📁 testing/                        # Testing infrastructure (Jest configs, E2E setup)
 │       ├── jest.config.ts
 │       ├── jest.e2e.config.ts
-│       └── setup-e2e.ts                   # E2E test setup (DB cleanups, etc.)
+│       ├── setup.ts                       # Unit and Integration test setup
+│       └── setup.e2e.ts                   # E2E test setup (test DB cleanups, migrations, etc.)
 │
 ├── 📁 common/                             # Cross-cutting concerns and shared utilities
 │   ├── 📁 context/

@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 import { randomUUID } from "crypto";
-import { DatabaseModule } from "../../infra/database/database.module";
+import { DatabaseModule } from "../database/database.module";
 
 const schemaId = `test_${randomUUID()}`;
 const testDbUrl = generateTestDatabaseUrl(process.env.DATABASE_URL!, schemaId);
@@ -15,6 +15,10 @@ function generateTestDatabaseUrl(baseUrl: string, schemaId: string): string {
 }
 
 beforeAll(async () => {
+  jest.spyOn(console, "log").mockImplementation(() => {});
+  jest.spyOn(console, "error").mockImplementation(() => {});
+  jest.spyOn(console, "warn").mockImplementation(() => {});
+
   console.log(`🧪 Using schema: ${schemaId}`);
   await DatabaseModule.dropSchema(schemaId);
   await DatabaseModule.migrate();

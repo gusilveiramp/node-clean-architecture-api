@@ -6,11 +6,13 @@ export class QueueModule {
 
   static async init() {
     console.log("🚀 QueueModule initialized and workers registered.");
-    // Aqui no futuro: inicialização de outras dependências de fila, se precisar
+    // Future: Initialize other dependencies if needed
   }
 
   static async shutdown() {
     console.log("🛑 QueueModule shutting down...");
-    // Se no futuro você quiser fechar conexões, parar workers, etc, pode fazer aqui
+    if (this.queueService.close) {
+      await this.queueService.close();
+    }
   }
 }

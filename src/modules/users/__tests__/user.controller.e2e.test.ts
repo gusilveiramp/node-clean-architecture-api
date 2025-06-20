@@ -1,10 +1,17 @@
 import request from "supertest";
 import { HttpModule } from "../../../infra/http/http.module";
+import { redisClient } from "../../../infra/config/redis.config";
+import { QueueModule } from "../../../infra/queue/queue.module";
 
 const app = HttpModule.getAppInstance();
 
 describe("UserController E2E", () => {
   let createdUserId: number;
+
+  afterAll(async () => {
+    await QueueModule.shutdown();
+    await redisClient.quit();
+  });
 
   it("should create a user (POST /users)", async () => {
     const response = await request(app).post("/users").send({
